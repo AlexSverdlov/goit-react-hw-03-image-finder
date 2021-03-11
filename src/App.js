@@ -11,6 +11,7 @@ class App extends React.Component {
     page: 1,
     datahits: [],
     search: '',
+    isloading: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -20,20 +21,22 @@ class App extends React.Component {
   }
 
   getImageFromAPI = () => {
+    this.setState({ isloading: true });
     axios
       .get(
         `https://pixabay.com/api/?key=${this.state.keypixabay}&q=${this.state.search}&image_type=photo&page=${this.state.page}&orientation=horizontal&per_page=12`,
       )
       .then(response => {
         this.setState(prevState => ({
-          datahits: response.data.hits,
+          datahits: [...prevState.datahits, ...response.data.hits],
           page: prevState.page + 1,
         }));
-      });
+      })
+      .finally(this.setState({ isloading: false }));
   };
 
   handleSubmit = searchtext => {
-    this.setState({ search: searchtext, page: 1 });
+    this.setState({ search: searchtext, page: 1, datahits: [] });
   };
 
   render() {
@@ -41,7 +44,11 @@ class App extends React.Component {
       <div className="App">
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery images={this.state.datahits} />
-        <Button />
+
+        {this.state.isloading && <h1>Загружаем</h1>}
+        {this.state.datahits.length > 0 && !this.state.isloading && (
+          <Button onClick={this.getImageFromAPI} />
+        )}
       </div>
     );
   }
