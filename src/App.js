@@ -3,6 +3,7 @@ import axios from 'axios';
 import Searchbar from './components/Searchbar';
 import Button from './components/Button';
 import ImageGallery from './components/ImageGallery';
+import Modal from './components/Modal';
 import './App.css';
 
 class App extends React.Component {
@@ -12,6 +13,8 @@ class App extends React.Component {
     datahits: [],
     search: '',
     isloading: false,
+    showModal: false,
+    lrgUrl: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -39,15 +42,28 @@ class App extends React.Component {
     this.setState({ search: searchtext, page: 1, datahits: [] });
   };
 
+  toggleModal = largeImg => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+      lrgUrl: largeImg,
+    }));
+  };
+
   render() {
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleSubmit} />
-        <ImageGallery images={this.state.datahits} />
+        <ImageGallery
+          images={this.state.datahits}
+          onOpenModal={this.toggleModal}
+        />
 
         {this.state.isloading && <h1>Загружаем</h1>}
         {this.state.datahits.length > 0 && !this.state.isloading && (
           <Button onClick={this.getImageFromAPI} />
+        )}
+        {this.state.showModal && (
+          <Modal largeImg={this.state.lrgUrl} onClose={this.toggleModal} />
         )}
       </div>
     );
