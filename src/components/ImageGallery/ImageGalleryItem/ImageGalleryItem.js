@@ -1,13 +1,13 @@
 import React from 'react';
-import styles from './ImageGallery.module.css';
+import styles from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ url, largeUrl }) => (
+const ImageGalleryItem = ({ url, onClick }) => (
   <li className={styles.ImageGalleryItem}>
     <img
       src={url}
       alt=""
       className={styles.ImageGalleryItemimage}
-      data-largeurl={largeUrl}
+      onClick={onClick}
     />
   </li>
 );

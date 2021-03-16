@@ -1,10 +1,10 @@
 import React from 'react';
-import axios from 'axios';
 import Loader from 'react-loader-spinner';
-import Searchbar from './components/Searchbar';
-import Button from './components/Button';
-import ImageGallery from './components/ImageGallery';
-import Modal from './components/Modal';
+import Searchbar from './components/Searchbar/Searchbar';
+import Button from './components/Button/Button';
+import ImageGallery from './components/ImageGallery/ImageGallery';
+import Modal from './components/Modal/Modal';
+import fetchTodos from './services/todos-api';
 import './App.css';
 
 class App extends React.Component {
@@ -26,10 +26,8 @@ class App extends React.Component {
 
   getImageFromAPI = () => {
     this.setState({ isloading: true });
-    axios
-      .get(
-        `https://pixabay.com/api/?key=${this.state.keypixabay}&q=${this.state.search}&image_type=photo&page=${this.state.page}&orientation=horizontal&per_page=12`,
-      )
+    const { keypixabay, search, page } = this.state;
+    fetchTodos(keypixabay, search, page)
       .then(response => {
         this.setState(prevState => ({
           datahits: [...prevState.datahits, ...response.data.hits],
