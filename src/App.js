@@ -22,23 +22,26 @@ class App extends React.Component {
     if (prevState.search !== this.state.search) {
       this.getImageFromAPI();
     }
+
+    if (prevState.datahits !== this.state.datahits) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
+      });
+    }
   }
 
   getImageFromAPI = () => {
     this.setState({ isloading: true });
     const { keypixabay, search, page } = this.state;
     fetchTodos(keypixabay, search, page)
-      .then(response => {
+      .then(data => {
         this.setState(prevState => ({
-          datahits: [...prevState.datahits, ...response.data.hits],
+          datahits: [...prevState.datahits, ...data.hits],
           page: prevState.page + 1,
         }));
       })
       .finally(() => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth',
-        });
         this.setState({ isloading: false });
       });
   };
@@ -47,10 +50,14 @@ class App extends React.Component {
     this.setState({ search: searchtext, page: 1, datahits: [] });
   };
 
-  toggleModal = largeImg => {
+  openModal = largeImg => {
+    this.setState({ lrgUrl: largeImg });
+    this.toggleModal();
+  };
+
+  toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal,
-      lrgUrl: largeImg,
     }));
   };
 
@@ -60,7 +67,7 @@ class App extends React.Component {
         <Searchbar onSubmit={this.handleSubmit} />
         <ImageGallery
           images={this.state.datahits}
-          onOpenModal={this.toggleModal}
+          onOpenModal={this.openModal}
         />
 
         {this.state.isloading && (

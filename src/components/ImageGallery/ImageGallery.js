@@ -14,7 +14,8 @@ class ImageGallery extends React.Component {
           <ImageGalleryItem
             key={id}
             url={webformatURL}
-            onClick={() => this.handleClick(largeImageURL)}
+            lrgUrl={largeImageURL}
+            onClick={this.handleClick}
           />
         ))}
       </ul>
